@@ -1,350 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Coach Outreach Tracker — College Baseball Recruiting</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coach Outreach Tracker — SUFS Recruiting</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --bg-primary:#ffffff;--bg-secondary:#f5f5f3;--bg-tertiary:#eeede8;
-    --text-primary:#1a1a18;--text-secondary:#6b6b66;--text-muted:#9b9b96;
-    --border-light:rgba(0,0,0,0.1);--border-mid:rgba(0,0,0,0.18);
-    --blue-bg:#E6F1FB;--blue-text:#0C447C;--blue-border:#185FA5;
-    --green-bg:#EAF3DE;--green-text:#27500A;
-    --amber-bg:#FAEEDA;--amber-text:#633806;
-    --red-bg:#FCEBEB;--red-text:#791F1F;
-    --radius-md:8px;--radius-lg:12px;
+    --purple:#3D1A5B;
+    --purple-dark:#2A1142;
+    --purple-tint:#EFE7F7;
+    --purple-tint-2:#F7F2FC;
+    --orange:#F2790A;
+    --orange-tint:#FDE9D6;
+    --white:#FFFFFF;
+    --ink:#2A1F33;
+    --muted:#6B6478;
+    --border:#E3DCEE;
+    --green:#1C7C4C;
+    --green-tint:#E3F5EA;
+    --slate:#52606D;
+    --slate-tint:#E7ECEF;
   }
-  @media(prefers-color-scheme:dark){
-    :root{
-      --bg-primary:#1e1e1c;--bg-secondary:#2a2a28;--bg-tertiary:#323230;
-      --text-primary:#f0efe8;--text-secondary:#a0a09a;--text-muted:#68685f;
-      --border-light:rgba(255,255,255,0.1);--border-mid:rgba(255,255,255,0.18);
-      --blue-bg:#042C53;--blue-text:#B5D4F4;--blue-border:#185FA5;
-      --green-bg:#173404;--green-text:#C0DD97;
-      --amber-bg:#412402;--amber-text:#FAC775;
-      --red-bg:#501313;--red-text:#F7C1C1;
-    }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:Calibri,"Segoe UI",Arial,sans-serif;
+    background:var(--white);
+    color:var(--ink);
   }
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg-tertiary);color:var(--text-primary);min-height:100vh}
-  .app-header{background:var(--bg-primary);border-bottom:0.5px solid var(--border-light);padding:14px 24px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
-  .app-header svg{width:28px;height:28px;color:#185FA5}
-  .app-header h1{font-size:17px;font-weight:600;letter-spacing:-0.2px}
-  .app-header p{font-size:12px;color:var(--text-secondary);margin-top:1px}
-  .header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
-  .main{max-width:860px;margin:0 auto;padding:24px 16px}
-  .btn{background:var(--bg-primary);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:7px 14px;font-size:13px;cursor:pointer;color:var(--text-primary);display:inline-flex;align-items:center;gap:6px;font-family:inherit}
-  .btn:hover{background:var(--bg-secondary)}
-  .btn.primary{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue-text)}
-  .btn.primary:hover{opacity:0.85}
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px}
-  .stat{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-md);padding:14px 16px}
-  .stat-label{font-size:11px;color:var(--text-secondary);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px}
-  .stat-val{font-size:26px;font-weight:600}
-  .filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-  .pill{font-size:12px;padding:5px 14px;border-radius:20px;border:0.5px solid var(--border-light);cursor:pointer;background:var(--bg-primary);color:var(--text-secondary);font-family:inherit}
-  .pill:hover{background:var(--bg-secondary)}
-  .pill.active{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue-text);font-weight:500}
-  .school-card{background:var(--bg-primary);border:0.5px solid var(--border-light);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden}
-  .card-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none}
-  .card-header:hover{background:var(--bg-secondary)}
-  .school-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
-  .school-info{flex:1;min-width:0}
-  .school-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .school-meta{font-size:12px;color:var(--text-secondary);margin-top:2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .status-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;white-space:nowrap;flex-shrink:0}
-  .s-new{background:var(--bg-secondary);color:var(--text-secondary)}
-  .s-contacted{background:var(--blue-bg);color:var(--blue-text)}
-  .s-replied{background:var(--green-bg);color:var(--green-text)}
-  .s-followup{background:var(--amber-bg);color:var(--amber-text)}
-  .s-cold{background:var(--red-bg);color:var(--red-text)}
-  .header-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
-  .icon-btn{background:transparent;border:0.5px solid var(--border-light);border-radius:var(--radius-md);width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);font-size:15px;font-family:inherit}
-  .icon-btn:hover{background:var(--bg-secondary);color:var(--text-primary)}
-  .status-select{font-size:11px;padding:3px 6px;border:0.5px solid var(--border-light);border-radius:var(--radius-md);background:var(--bg-primary);color:var(--text-primary);font-family:inherit;cursor:pointer}
-  .chevron{color:var(--text-muted);transition:transform 0.2s;font-size:14px;flex-shrink:0}
-  .chevron.open{transform:rotate(180deg)}
-  .card-body{display:none;border-top:0.5px solid var(--border-light)}
-  .card-body.open{display:block}
-  .coach-row{display:grid;grid-template-columns:1fr auto;align-items:start;gap:12px;padding:12px 16px;border-bottom:0.5px solid var(--border-light)}
-  .coach-row:last-child{border-bottom:none}
-  .coach-name{font-size:13px;font-weight:600;margin-bottom:1px}
-  .coach-role{font-size:11px;color:var(--text-secondary);margin-bottom:6px}
-  .contact-chips{display:flex;gap:6px;flex-wrap:wrap}
-  .chip{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--bg-secondary);color:var(--text-secondary);display:inline-flex;align-items:center;gap:4px;text-decoration:none}
-  .chip:hover{background:var(--bg-tertiary);color:var(--text-primary)}
-  .outreach-col{display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-top:2px}
-  .outreach-count{text-align:right}
-  .count-label{font-size:10px;color:var(--text-muted);display:block}
-  .count-num{font-size:18px;font-weight:700}
-  .action-btns{display:flex;gap:5px}
-  .reminder-tag{font-size:11px;padding:2px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:3px}
-  .reminder-due{background:var(--amber-bg);color:var(--amber-text)}
-  .reminder-overdue{background:var(--red-bg);color:var(--red-text)}
-  .reminder-ok{background:var(--bg-secondary);color:var(--text-secondary)}
-  .notes-area{padding:10px 16px;border-top:0.5px solid var(--border-light);background:var(--bg-secondary)}
-  .notes-area label{font-size:11px;color:var(--text-secondary);display:block;margin-bottom:4px}
-  .notes-area textarea{width:100%;font-size:12px;padding:6px 8px;border:0.5px solid var(--border-light);border-radius:var(--radius-md);resize:vertical;min-height:52px;background:var(--bg-primary);color:var(--text-primary);font-family:inherit}
-  .empty{text-align:center;padding:3rem;color:var(--text-secondary);font-size:14px}
-  .empty-icon{font-size:40px;display:block;margin-bottom:8px}
-
-  /* Modal */
-  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
-  .modal-bg.open{display:flex}
-  .modal{background:var(--bg-primary);border-radius:var(--radius-lg);padding:1.5rem;width:min(540px,100%);max-height:90vh;overflow-y:auto;border:0.5px solid var(--border-mid)}
-  .modal h3{font-size:16px;font-weight:600;margin-bottom:1.25rem}
-  .section-label{font-size:11px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;margin-top:16px}
-  .field{margin-bottom:10px}
-  .field label{font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px}
-  .field input,.field select,.field textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border-mid);border-radius:var(--radius-md);font-size:13px;background:var(--bg-primary);color:var(--text-primary);font-family:inherit}
-  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue-border);box-shadow:0 0 0 2px rgba(24,95,165,0.15)}
-  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--border-light)}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a18;color:#f0efe8;padding:10px 20px;border-radius:20px;font-size:13px;z-index:300;opacity:0;transition:opacity 0.3s;pointer-events:none}
-  .toast.show{opacity:1}
-
-  @media(max-width:600px){
-    .field-row{grid-template-columns:1fr}
-    .header-actions .status-select{display:none}
-    .app-header h1{font-size:15px}
+  .app{max-width:1180px;margin:0 auto;padding:28px 24px 60px;}
+  .header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:24px;flex-wrap:wrap;gap:16px;
   }
-</style>
-</head>
-<body>
-
-<header class="app-header">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-  </svg>
-  <div>
-    <h1>Coach Outreach Tracker</h1>
-    <p>College Baseball Recruiting</p>
-  </div>
-  <div class="header-right">
-    <button class="btn" onclick="exportCSV()" title="Export to CSV">&#8595; Export CSV</button>
-    <button class="btn primary" onclick="openModal()">+ Add School</button>
-  </div>
-</header>
-
-<main class="main">
-  <div class="stats" id="stats"></div>
-  <div class="filters">
-    <button class="pill active" onclick="setFilter('all',this)">All Schools</button>
-    <button class="pill" onclick="setFilter('followup',this)">&#128276; Follow-up Due</button>
-    <button class="pill" onclick="setFilter('replied',this)">&#10003; Replied</button>
-    <button class="pill" onclick="setFilter('contacted',this)">Contacted</button>
-    <button class="pill" onclick="setFilter('cold',this)">Gone Cold</button>
-    <button class="pill" onclick="setFilter('new',this)">Not Started</button>
-  </div>
-  <div id="school-list"></div>
-</main>
-
-<!-- Add/Edit Modal -->
-<div class="modal-bg" id="modal">
-  <div class="modal">
-    <h3 id="modal-title">Add School & Coach</h3>
-    <div class="section-label">School</div>
-    <div class="field-row">
-      <div class="field"><label>School name *</label><input id="f-school" placeholder="e.g. University of Wisconsin"/></div>
-      <div class="field"><label>Division</label>
-        <select id="f-div"><option>D1</option><option>D2</option><option>D3</option><option>JUCO</option><option>NAIA</option></select>
-      </div>
-    </div>
-    <div class="field"><label>Follow-up reminder (days from today)</label><input id="f-days" type="number" value="7" min="1" max="180"/></div>
-    <div class="section-label">Coach</div>
-    <div class="field-row">
-      <div class="field"><label>Coach name</label><input id="f-name" placeholder="Coach Smith"/></div>
-      <div class="field"><label>Role</label>
-        <select id="f-role">
-          <option>Head Coach</option><option>Pitching Coach</option><option>Hitting Coach</option>
-          <option>Assistant Coach</option><option>Recruiting Coordinator</option><option>Bullpen Coach</option>
-        </select>
-      </div>
-    </div>
-    <div class="field"><label>Email</label><input id="f-email" type="email" placeholder="coach@school.edu"/></div>
-    <div class="field-row">
-      <div class="field"><label>Phone</label><input id="f-phone" placeholder="(414) 555-0100"/></div>
-      <div class="field"><label>X / Twitter handle</label><input id="f-twitter" placeholder="@CoachSmith"/></div>
-    </div>
-    <div class="field"><label>Notes</label><textarea id="f-notes" rows="2" placeholder="Any context, mutual connections, visited campus..."></textarea></div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn primary" onclick="saveEntry()">Save</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-const COLORS=[['#DBEAFE','#1e40af'],['#D1FAE5','#065f46'],['#EDE9FE','#4c1d95'],['#FCE7F3','#831843'],['#FEF3C7','#78350f'],['#FFEDD5','#7c2d12'],['#F0FDF4','#14532d'],['#EFF6FF','#1e3a5f']];
-const STATUS_LABELS={new:'Not started',contacted:'Contacted',replied:'Replied ✓',followup:'Follow-up due',cold:'Gone cold'};
-const STATUS_CLS={new:'s-new',contacted:'s-contacted',replied:'s-replied',followup:'s-followup',cold:'s-cold'};
-
-let data=JSON.parse(localStorage.getItem('coachTracker')||'[]');
-let filter='all';
-let addCoachIdx=null;
-
-function save(){localStorage.setItem('coachTracker',JSON.stringify(data));}
-function colorFor(n){let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%COLORS.length;return COLORS[h];}
-function initials(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
-function daysUntil(ds){if(!ds)return null;return Math.round((new Date(ds)-new Date())/(864e5));}
-function futureDate(days){const d=new Date();d.setDate(d.getDate()+days);return d.toISOString().split('T')[0];}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-
-function render(){renderStats();renderList();}
-
-function renderStats(){
-  const total=data.length;
-  const contacted=data.filter(d=>d.status&&d.status!=='new').length;
-  const replied=data.filter(d=>d.status==='replied').length;
-  const due=data.filter(d=>{if(!d.reminder||d.status==='cold')return false;return daysUntil(d.reminder)<=0;}).length;
-  document.getElementById('stats').innerHTML=`
-    <div class="stat"><div class="stat-label">Schools</div><div class="stat-val">${total}</div></div>
-    <div class="stat"><div class="stat-label">Contacted</div><div class="stat-val">${contacted}</div></div>
-    <div class="stat"><div class="stat-label">Replied</div><div class="stat-val">${replied}</div></div>
-    <div class="stat"><div class="stat-label">Follow-ups due</div><div class="stat-val" style="color:${due>0?'var(--amber-text)':'var(--text-primary)'}">${due}</div></div>
-  `;
-}
-
-function renderList(){
-  let list=data.slice();
-  if(filter==='followup') list=data.filter(d=>d.reminder&&daysUntil(d.reminder)<=0&&d.status!=='cold');
-  else if(filter!=='all') list=data.filter(d=>(d.status||'new')===filter);
-  const el=document.getElementById('school-list');
-  if(!list.length){el.innerHTML=`<div class="empty"><span class="empty-icon">&#127944;</span>${filter==='all'?'No schools yet — hit <strong>Add School</strong> to get started.':'No schools match this filter.'}</div>`;return;}
-  el.innerHTML=list.map(entry=>{
-    const idx=data.indexOf(entry);
-    const [bg,fg]=colorFor(entry.school);
-    const st=entry.status||'new';
-    const totalOut=(entry.coaches||[]).reduce((s,c)=>s+(c.outreaches||0),0);
-    const days=daysUntil(entry.reminder);
-    let remTag='';
-    if(entry.reminder&&st!=='cold'){
-      if(days<0) remTag=`<span class="reminder-tag reminder-overdue">&#9888; ${Math.abs(days)}d overdue</span>`;
-      else if(days<=3) remTag=`<span class="reminder-tag reminder-due">&#128276; Follow up in ${days}d</span>`;
-      else if(days<=14) remTag=`<span class="reminder-tag reminder-ok">&#128197; ${days}d</span>`;
-    }
-    const coachRows=(entry.coaches||[]).map((c,ci)=>`
-      <div class="coach-row">
-        <div>
-          <div class="coach-name">${esc(c.name||'Unnamed Coach')}</div>
-          <div class="coach-role">${esc(c.role||'')}</div>
-          <div class="contact-chips">
-            ${c.email?`<a class="chip" href="mailto:${esc(c.email)}">&#9993; ${esc(c.email)}</a>`:''}
-            ${c.phone?`<a class="chip" href="tel:${esc(c.phone)}">&#128222; ${esc(c.phone)}</a>`:''}
-            ${c.twitter?`<a class="chip" href="https://x.com/${c.twitter.replace('@','')}" target="_blank">&#120143; ${esc(c.twitter)}</a>`:''}
-          </div>
-          ${c.notes?`<div style="font-size:11px;color:var(--text-secondary);margin-top:6px;font-style:italic">${esc(c.notes)}</div>`:''}
-        </div>
-        <div class="outreach-col">
-          <div class="outreach-count">
-            <span class="count-label">Outreaches</span>
-            <span class="count-num">${c.outreaches||0}</span>
-          </div>
-          <div class="action-btns">
-            <button class="icon-btn" title="Log outreach" onclick="logOutreach(${idx},${ci})">&#128140;</button>
-            <button class="icon-btn" title="Remove coach" onclick="removeCoach(${idx},${ci})">&#128465;</button>
-          </div>
-        </div>
-      </div>
-    `).join('');
-    return `
-      <div class="school-card">
-        <div class="card-header" onclick="toggleCard(${idx})">
-          <div class="school-avatar" style="background:${bg};color:${fg}">${initials(entry.school)}</div>
-          <div class="school-info">
-            <div class="school-name">${esc(entry.school)} <span style="font-size:11px;font-weight:400;color:var(--text-muted)">${esc(entry.division||'')}</span></div>
-            <div class="school-meta">
-              ${(entry.coaches||[]).length} coach${(entry.coaches||[]).length!==1?'es':''}
-              &nbsp;·&nbsp; ${totalOut} outreach${totalOut!==1?'es':''}
-              ${remTag?'&nbsp;'+remTag:''}
-            </div>
-          </div>
-          <span class="status-badge ${STATUS_CLS[st]}">${STATUS_LABELS[st]||st}</span>
-          <div class="header-actions" onclick="event.stopPropagation()">
-            <select class="status-select" onchange="changeStatus(${idx},this.value)">
-              ${Object.entries(STATUS_LABELS).map(([k,v])=>`<option value="${k}"${st===k?' selected':''}>${v}</option>`).join('')}
-            </select>
-            <button class="icon-btn" title="Add coach" onclick="addCoachTo(${idx})">&#43;&#127950;</button>
-            <button class="icon-btn" title="Delete school" onclick="deleteSchool(${idx})">&#128465;</button>
-          </div>
-          <span class="chevron${entry._open?' open':''}">&#9660;</span>
-        </div>
-        <div class="card-body${entry._open?' open':''}">
-          ${coachRows||'<div style="padding:12px 16px;font-size:13px;color:var(--text-secondary)">No coaches yet — click +⚾ to add one.</div>'}
-          ${entry.schoolNotes!==undefined?`<div class="notes-area"><label>School notes</label><textarea onchange="updateSchoolNotes(${idx},this.value)" rows="2">${esc(entry.schoolNotes||'')}</textarea></div>`:''}
-          <div style="padding:8px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:0.5px solid var(--border-light)">
-            <button class="btn" style="font-size:12px" onclick="toggleNotes(${idx})">${entry.schoolNotes!==undefined?'Hide':'+ School notes'}</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function toggleCard(idx){data[idx]._open=!data[idx]._open;render();}
-function setFilter(f,el){filter=f;document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');render();}
-function changeStatus(idx,val){data[idx].status=val;save();render();}
-function toggleNotes(idx){data[idx].schoolNotes=data[idx].schoolNotes!==undefined?undefined:'';data[idx]._open=true;render();}
-function updateSchoolNotes(idx,val){data[idx].schoolNotes=val;save();}
-
-function logOutreach(idx,ci){
-  data[idx].coaches[ci].outreaches=(data[idx].coaches[ci].outreaches||0)+1;
-  if(!data[idx].status||data[idx].status==='new') data[idx].status='contacted';
-  data[idx].reminder=futureDate(7);
-  save();render();
-  showToast('Outreach logged! Follow-up set for 7 days.');
-}
-function removeCoach(idx,ci){if(confirm('Remove this coach?')){data[idx].coaches.splice(ci,1);save();render();}}
-function deleteSchool(idx){if(confirm('Delete '+data[idx].school+'?')){data.splice(idx,1);save();render();}}
-function addCoachTo(idx){addCoachIdx=idx;clearForm();document.getElementById('f-school').value=data[idx].school;document.getElementById('f-school').disabled=true;document.getElementById('modal-title').textContent='Add Coach — '+data[idx].school;document.getElementById('modal').classList.add('open');}
-function openModal(){addCoachIdx=null;clearForm();document.getElementById('f-school').disabled=false;document.getElementById('modal-title').textContent='Add School & Coach';document.getElementById('modal').classList.add('open');}
-function closeModal(){document.getElementById('modal').classList.remove('open');addCoachIdx=null;document.getElementById('f-school').disabled=false;}
-function clearForm(){['f-school','f-name','f-email','f-phone','f-twitter','f-notes'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-div').selectedIndex=0;document.getElementById('f-role').selectedIndex=0;document.getElementById('f-days').value=7;}
-
-function saveEntry(){
-  const school=document.getElementById('f-school').value.trim();
-  if(!school){alert('School name is required.');return;}
-  const coach={name:document.getElementById('f-name').value.trim(),role:document.getElementById('f-role').value,email:document.getElementById('f-email').value.trim(),phone:document.getElementById('f-phone').value.trim(),twitter:document.getElementById('f-twitter').value.trim(),notes:document.getElementById('f-notes').value.trim(),outreaches:0};
-  const days=parseInt(document.getElementById('f-days').value)||7;
-  if(addCoachIdx!==null){
-    data[addCoachIdx].coaches.push(coach);data[addCoachIdx]._open=true;
-  } else {
-    const exist=data.find(e=>e.school.toLowerCase()===school.toLowerCase());
-    if(exist){exist.coaches.push(coach);exist._open=true;}
-    else data.push({school,division:document.getElementById('f-div').value,status:'new',reminder:futureDate(days),coaches:[coach],_open:true});
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-mark{
+    width:44px;height:44px;border-radius:50%;
+    background:var(--purple);display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
   }
-  save();closeModal();render();showToast('Saved!');
-}
-
-function exportCSV(){
-  if(!data.length){alert('No data to export.');return;}
-  const rows=[['School','Division','Status','Coach Name','Role','Email','Phone','Twitter','Outreaches','Reminder Date','School Notes']];
-  data.forEach(e=>{
-    if(!(e.coaches||[]).length) rows.push([e.school,e.division||'',e.status||'new','','','','','',0,e.reminder||'',e.schoolNotes||'']);
-    (e.coaches||[]).forEach(c=>rows.push([e.school,e.division||'',e.status||'new',c.name||'',c.role||'',c.email||'',c.phone||'',c.twitter||'',c.outreaches||0,e.reminder||'',e.schoolNotes||'']));
-  });
-  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
-  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='coach-outreach.csv';a.click();
-  showToast('CSV exported!');
-}
-
-document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-
-// Demo data if first load
-if(!data.length){
-  data=[
-    {school:'University of Wisconsin',division:'D1',status:'replied',reminder:futureDate(-2),coaches:[{name:'Coach Dave Gustafson',role:'Head Coach',email:'gustafson@wisc.edu',phone:'(608) 555-0100',twitter:'@CoachGus',notes:'Met at fall camp — seemed interested',outreaches:3}],_open:false},
-    {school:'Marquette University',division:'D1',status:'contacted',reminder:futureDate(2),coaches:[{name:'Coach Brian Ryman',role:'Head Coach',email:'ryman@mu.edu',phone:'(414) 555-0182',twitter:'@RymanBaseball',notes:'',outreaches:1},{name:'Coach Jake Peters',role:'Pitching Coach',email:'jpeters@mu.edu',phone:'',twitter:'',notes:'',outreaches:1}],_open:false},
-    {school:'UW-Milwaukee',division:'D1',status:'new',reminder:futureDate(14),coaches:[{name:'Coach Scott Doffek',role:'Head Coach',email:'doffek@uwm.edu',phone:'(414) 555-0233',twitter:'@PantherBall',notes:'',outreaches:0}],_open:false},
-  ];
-  save();
-}
-render();
-</script>
-</body>
-</html>
+  .brand-mark svg{width:22px;height:22px;}
+  .brand-text .eyebrow{
+    font-size:11px;letter-spacing:2px;font-weight:700;color:var(--orange);
+    text-transform:uppercase;margin:0 0 2px;
+  }
+  .brand-text h1{
+    margin:0;font-size:22px;font-weight:700;color:var(--purple);
+    font-family:Cambria,Georgia,serif;
+  }
+  .header-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  button{font-family:inherit;cursor:pointer;}
+  .btn{
+    border:none;border-radius:8px;padding:11px 18px;font-size:14px;font-weight:600;
+    display:inline-flex;align-items:center;gap:8px;transition:transform .08s ease, box-shadow .15s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--orange);color:var(--white);}
+  .btn-primary:hover{box-shadow:0 4px 14px rgba(242,121,10,.35);}
+  .btn-secondary{background:var(--purple-tint);color:var(--purple);}
+  .btn-secondary:hover{box-shadow:0 4px 14px rgba(61,26,91,.15);}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+  .btn-ghost:hover{background:var(--purple-tint-2);}
+  .stats{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;
+  }
+  .stat-card{
+    background:var(--purple-tint-2);border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;
+  }
+  .stat-card .num{font-size:26px;font-weight:700;color:var(--purple);font-family:Cambria,serif;line-height:1.1;}
+  .stat-card .label{font-size:11.5px;color:var(--muted);margin-top:4px;font-weight:600;letter-spacing:.3px;}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .filter-pill{
+    border:1px solid var(--border);background:var(--white);color:var(--ink);
+    border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;
+    display:flex;align-items:center;gap:6px;
+  }
+  .filter-pill.active{background:var(--purple);border-color:var(--purple);color:var(--white);}
+  .filter-pill .dot{width:8px;height:8px;border-radius:50%;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;}
+  .card{
+    border:1px solid var(--border);border-radius:12px;background:var(--white);
+    padding:18px;display:flex;flex-direction:column;gap:12px;
+    box-shadow:0 2px 10px rgba(61,26,91,.05);
+  }
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .school-name{font-size:17px;font-weight:700;color:var(--purple);font-family:Cambria,serif;margin:0 0 4px;}
+  .division-badge{
+    display:inline-block;font-size:11px;font-weight:700;color:var(--purple);
+    background:var(--purple-tint);border-radius:5px;padding:2px 7px;letter-spacing:.5px;
+  }
+  .status-badge{
+    font-size:11.5px;font-weight:700;border-radius:999px;padding:5px 12px;
+    white-space:nowrap;display:flex;align-items:center;gap:6px;
+  }
+  .status-dot{width:7px;height:7px;border-
