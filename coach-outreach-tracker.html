@@ -94,4 +94,510 @@
     font-size:11.5px;font-weight:700;border-radius:999px;padding:5px 12px;
     white-space:nowrap;display:flex;align-items:center;gap:6px;
   }
-  .status-dot{width:7px;height:7px;border-
+  .status-dot{width:7px;height:7px;border-radius:50%;}
+  .coach-line{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);}
+  .coach-line .role{color:var(--muted);font-size:12.5px;}
+  .contact-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);}
+  .contact-row a{color:var(--slate);text-decoration:none;}
+  .contact-row a:hover{color:var(--purple);text-decoration:underline;}
+  .notes{font-size:12.5px;color:var(--muted);line-height:1.4;border-top:1px solid var(--border);padding-top:10px;}
+  .followup-note{font-size:12px;font-weight:700;color:var(--orange);display:flex;align-items:center;gap:6px;}
+  .card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;}
+  .mini-btn{
+    border:1px solid var(--border);background:var(--white);color:var(--ink);
+    border-radius:7px;padding:6px 10px;font-size:12px;font-weight:600;
+  }
+  .mini-btn.danger{color:#B3261E;border-color:#F1D6D3;}
+  .mini-btn.danger:hover{background:#FBEAE8;}
+  .mini-btn:hover{background:var(--purple-tint-2);}
+  .mini-btn.compose{color:var(--purple);border-color:var(--purple-tint);background:var(--purple-tint-2);font-weight:700;}
+  .mini-btn.compose:hover{background:var(--purple-tint);}
+  select.status-select{
+    border:1px solid var(--border);border-radius:7px;padding:6px 8px;font-size:12px;
+    font-family:inherit;color:var(--ink);background:var(--white);font-weight:600;
+  }
+  .empty{
+    text-align:center;padding:70px 20px;color:var(--muted);
+    border:1.5px dashed var(--border);border-radius:14px;
+  }
+  .empty .icon-circle{
+    width:56px;height:56px;border-radius:50%;background:var(--purple-tint);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 14px;
+  }
+  .empty h3{color:var(--purple);font-family:Cambria,serif;margin:0 0 6px;}
+  .overlay{
+    position:fixed;inset:0;background:rgba(42,17,66,.45);
+    display:none;align-items:center;justify-content:center;padding:20px;z-index:50;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:var(--white);border-radius:14px;max-width:560px;width:100%;
+    max-height:88vh;overflow-y:auto;padding:28px;
+  }
+  .modal h2{margin:0 0 4px;color:var(--purple);font-family:Cambria,serif;font-size:22px;}
+  .modal .sub{color:var(--muted);font-size:13px;margin:0 0 20px;}
+  .field-group{margin-bottom:14px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  label{display:block;font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  label .req{color:var(--orange);}
+  input[type=text], input[type=email], input[type=tel], input[type=number], textarea, select{
+    width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;
+    font-size:14px;font-family:inherit;color:var(--ink);background:var(--white);
+  }
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--orange);outline-offset:1px;}
+  textarea{resize:vertical;min-height:64px;}
+  .section-label{
+    font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--orange);
+    text-transform:uppercase;margin:18px 0 10px;
+  }
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--purple);color:var(--white);padding:12px 22px;border-radius:999px;
+    font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);
+    opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;
+    z-index:60;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
+  .compose-modal{max-width:680px;}
+  .template-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .template-chip{
+    border:1px solid var(--border);background:var(--white);color:var(--ink);
+    border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:600;
+  }
+  .template-chip.active{background:var(--purple);border-color:var(--purple);color:var(--white);}
+  .compose-meta{
+    background:var(--purple-tint-2);border:1px solid var(--border);border-radius:8px;
+    padding:10px 12px;font-size:12.5px;color:var(--muted);margin-bottom:14px;
+  }
+  .compose-meta strong{color:var(--ink);}
+  .placeholder-hint{font-size:11.5px;color:var(--muted);margin-top:6px;}
+  .compose-footer-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap;}
+  .compose-footer-actions .left-group{display:flex;gap:10px;flex-wrap:wrap;}
+  @media (max-width:720px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .field-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9" fill="#F2790A"/>
+          <path d="M5.5 6.5C8 9 8 15 5.5 17.5M18.5 6.5C16 9 16 15 18.5 17.5" stroke="#3D1A5B" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <p class="eyebrow">SUFS Recruiting</p>
+        <h1>Coach Outreach Tracker</h1>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" id="exportBtn">Export CSV</button>
+      <button class="btn btn-primary" id="addBtn">+ Add School</button>
+    </div>
+  </div>
+  <div class="stats" id="statsStrip"></div>
+  <div class="filters" id="filters"></div>
+  <div id="gridWrap"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">Add School &amp; Coach</h2>
+    <p class="sub">Track every program you've reached out to in one place.</p>
+    <div class="section-label">School</div>
+    <div class="field-group">
+      <label>School name <span class="req">*</span></label>
+      <input type="text" id="f-school" placeholder="e.g. Coastal University">
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>Division</label>
+        <select id="f-division">
+          <option>D1</option><option selected>D2</option><option>D3</option><option>JUCO</option><option>NAIA</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Follow-up reminder (days from today)</label>
+        <input type="number" id="f-followup" placeholder="e.g. 14" min="0">
+      </div>
+    </div>
+    <div class="section-label">Coach</div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>Coach name</label>
+        <input type="text" id="f-coach" placeholder="e.g. Coach Daniels">
+      </div>
+      <div class="field-group">
+        <label>Role</label>
+        <select id="f-role">
+          <option>Head Coach</option><option>Assistant Coach</option><option>Recruiting Coordinator</option>
+          <option>Offensive Coach</option><option>Defensive Coach</option><option>Position Coach</option>
+          <option>Pitching Coach</option><option>Hitting Coach</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>Email</label>
+        <input type="email" id="f-email" placeholder="coach@school.edu">
+      </div>
+      <div class="field-group">
+        <label>Phone</label>
+        <input type="tel" id="f-phone" placeholder="(555) 555-5555">
+      </div>
+    </div>
+    <div class="field-group">
+      <label>X / Twitter handle</label>
+      <input type="text" id="f-twitter" placeholder="@coachname">
+    </div>
+    <div class="field-group">
+      <label>Notes</label>
+      <textarea id="f-notes" placeholder="Anything worth remembering about this contact..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="saveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="overlay" id="composeOverlay">
+  <div class="modal compose-modal">
+    <h2>&#9993; Compose Email</h2>
+    <p class="sub" id="composeSubtitle">Drafting an email to a coach.</p>
+    <div class="compose-meta" id="composeMeta"></div>
+    <div class="section-label">Choose a Starting Point</div>
+    <div class="template-row" id="templateRow"></div>
+    <div class="field-group">
+      <label>To</label>
+      <input type="text" id="c-to" readonly>
+    </div>
+    <div class="field-group">
+      <label>Subject</label>
+      <input type="text" id="c-subject">
+    </div>
+    <div class="field-group">
+      <label>Body</label>
+      <textarea id="c-body" style="min-height:240px;"></textarea>
+      <p class="placeholder-hint">Tip: anything in [brackets] is a placeholder — fill those in before sending.</p>
+    </div>
+    <div class="compose-footer-actions">
+      <div class="left-group">
+        <button class="btn btn-ghost" id="composeCancelBtn">Close</button>
+        <button class="btn btn-secondary" id="copyBodyBtn">Copy to Clipboard</button>
+      </div>
+      <button class="btn btn-primary" id="openEmailBtn">Open in Email App &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STATUS = {
+  "not-started": { label: "Not Started", color: "#52606D", tint: "#E7ECEF" },
+  "contacted":   { label: "Contacted",   color: "#3D1A5B", tint: "#EFE7F7" },
+  "followup":    { label: "Follow-up Due",color: "#F2790A", tint: "#FDE9D6" },
+  "replied":     { label: "Replied",     color: "#1C7C4C", tint: "#E3F5EA" },
+  "cold":        { label: "Gone Cold",   color: "#8C8597", tint: "#F1EEF5" },
+};
+const STORAGE_KEY = "sufs_schools";
+let schools = [];
+let activeFilter = "all";
+let editingId = null;
+const $ = (sel) => document.querySelector(sel);
+const overlay = $("#overlay");
+
+function uid(){ return "s_" + Math.random().toString(36).slice(2, 10); }
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  const d = new Date(dateStr + "T00:00:00");
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((d - today) / 86400000);
+}
+function loadSchools(){
+  try{ schools = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+  catch(e){ schools = []; }
+  render();
+}
+function saveSchools(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(schools)); }
+  catch(e){ showToast("Couldn't save — try again"); }
+}
+function showToast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+function openModal(school){
+  editingId = school ? school.id : null;
+  $("#modalTitle").textContent = school ? "Edit School & Coach" : "Add School & Coach";
+  $("#f-school").value = school ? school.school : "";
+  $("#f-division").value = school ? school.division : "D2";
+  $("#f-followup").value = school && school.followupDays != null ? school.followupDays : "";
+  $("#f-coach").value = school ? school.coach : "";
+  $("#f-role").value = school ? school.role : "Head Coach";
+  $("#f-email").value = school ? school.email : "";
+  $("#f-phone").value = school ? school.phone : "";
+  $("#f-twitter").value = school ? school.twitter : "";
+  $("#f-notes").value = school ? school.notes : "";
+  overlay.classList.add("open");
+  setTimeout(()=>$("#f-school").focus(), 50);
+}
+function closeModal(){ overlay.classList.remove("open"); editingId = null; }
+
+function handleSave(){
+  const schoolName = $("#f-school").value.trim();
+  if(!schoolName){ $("#f-school").focus(); showToast("School name is required"); return; }
+  const followupDays = $("#f-followup").value;
+  let followupDate = null;
+  if(followupDays !== ""){
+    const d = new Date();
+    d.setDate(d.getDate() + parseInt(followupDays, 10));
+    followupDate = d.toISOString().slice(0,10);
+  }
+  if(editingId){
+    const idx = schools.findIndex(s => s.id === editingId);
+    if(idx > -1){
+      schools[idx] = { ...schools[idx], school: schoolName, division: $("#f-division").value,
+        followupDate, followupDays: followupDays === "" ? null : parseInt(followupDays, 10),
+        coach: $("#f-coach").value.trim(), role: $("#f-role").value,
+        email: $("#f-email").value.trim(), phone: $("#f-phone").value.trim(),
+        twitter: $("#f-twitter").value.trim(), notes: $("#f-notes").value.trim() };
+    }
+    showToast("Updated " + schoolName);
+  } else {
+    schools.unshift({ id: uid(), school: schoolName, division: $("#f-division").value,
+      followupDate, followupDays: followupDays === "" ? null : parseInt(followupDays, 10),
+      coach: $("#f-coach").value.trim(), role: $("#f-role").value,
+      email: $("#f-email").value.trim(), phone: $("#f-phone").value.trim(),
+      twitter: $("#f-twitter").value.trim(), notes: $("#f-notes").value.trim(),
+      status: "not-started", dateAdded: new Date().toISOString().slice(0,10) });
+    showToast("Added " + schoolName);
+  }
+  saveSchools(); closeModal(); render();
+}
+
+function deleteSchool(id){
+  const s = schools.find(x => x.id === id);
+  if(!s) return;
+  if(!confirm("Remove " + s.school + " from your tracker?")) return;
+  schools = schools.filter(x => x.id !== id);
+  saveSchools(); render();
+}
+function setStatus(id, status){
+  const s = schools.find(x => x.id === id);
+  if(!s) return;
+  s.status = status; saveSchools(); render();
+}
+function computeCounts(){
+  const counts = { all: schools.length, "not-started":0, contacted:0, followup:0, replied:0, cold:0 };
+  schools.forEach(s => {
+    const isOverdue = s.followupDate && daysUntil(s.followupDate) <= 0 && s.status !== "replied" && s.status !== "cold";
+    if(isOverdue) counts.followup++;
+    if(counts[s.status] !== undefined) counts[s.status]++;
+  });
+  return counts;
+}
+function renderStats(){
+  const counts = computeCounts();
+  const repliedPct = schools.length ? Math.round((counts.replied / schools.length) * 100) : 0;
+  const cards = [
+    { num: schools.length, label: "Total Schools" },
+    { num: counts["not-started"], label: "Not Started" },
+    { num: counts.contacted, label: "Contacted" },
+    { num: counts.followup, label: "Follow-up Due" },
+    { num: repliedPct + "%", label: "Reply Rate" },
+  ];
+  $("#statsStrip").innerHTML = cards.map(c => `
+    <div class="stat-card"><div class="num">${c.num}</div><div class="label">${c.label.toUpperCase()}</div></div>
+  `).join("");
+}
+function renderFilters(){
+  const counts = computeCounts();
+  const pills = [
+    { key: "all", label: "All Schools", color: null },
+    { key: "followup", label: "Follow-up Due", color: STATUS.followup.color },
+    { key: "replied", label: "Replied", color: STATUS.replied.color },
+    { key: "contacted", label: "Contacted", color: STATUS.contacted.color },
+    { key: "cold", label: "Gone Cold", color: STATUS.cold.color },
+    { key: "not-started", label: "Not Started", color: STATUS["not-started"].color },
+  ];
+  $("#filters").innerHTML = pills.map(p => `
+    <button class="filter-pill ${activeFilter===p.key?'active':''}" data-filter="${p.key}">
+      ${p.color ? `<span class="dot" style="background:${activeFilter===p.key?'#fff':p.color}"></span>` : ""}
+      ${p.label}${p.key!=="all" ? ` (${counts[p.key]||0})` : ` (${counts.all})`}
+    </button>
+  `).join("");
+  document.querySelectorAll(".filter-pill").forEach(btn => {
+    btn.addEventListener("click", () => { activeFilter = btn.dataset.filter; render(); });
+  });
+}
+function matchesFilter(s){
+  if(activeFilter === "all") return true;
+  if(activeFilter === "followup") return s.followupDate && daysUntil(s.followupDate) <= 0 && s.status !== "replied" && s.status !== "cold";
+  return s.status === activeFilter;
+}
+function escapeHtml(str){
+  return (str||"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function renderGrid(){
+  const list = schools.filter(matchesFilter);
+  const wrap = $("#gridWrap");
+  if(schools.length === 0){
+    wrap.innerHTML = `<div class="empty"><div class="icon-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#3D1A5B" stroke-width="2" stroke-linecap="round"/></svg></div><h3>No schools yet</h3><p>Add your first target school to start tracking outreach.</p></div>`;
+    return;
+  }
+  if(list.length === 0){
+    wrap.innerHTML = `<div class="empty"><h3>Nothing here</h3><p>No schools match this filter right now.</p></div>`;
+    return;
+  }
+  wrap.innerHTML = `<div class="grid">${list.map(s => {
+    const st = STATUS[s.status] || STATUS["not-started"];
+    const overdue = s.followupDate && daysUntil(s.followupDate) <= 0 && s.status !== "replied" && s.status !== "cold";
+    const dleft = s.followupDate ? daysUntil(s.followupDate) : null;
+    let followupHtml = "";
+    if(s.followupDate && s.status !== "replied" && s.status !== "cold"){
+      followupHtml = `<div class="followup-note"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 8v5l3 2" stroke="#F2790A" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#F2790A" stroke-width="2"/></svg>${overdue ? "Follow-up due now" : `Follow up in ${dleft} day${dleft===1?'':'s'}`}</div>`;
+    }
+    return `<div class="card">
+      <div class="card-top">
+        <div>
+          <h3 class="school-name">${escapeHtml(s.school)}</h3>
+          <span class="division-badge">${escapeHtml(s.division)}</span>
+        </div>
+        <span class="status-badge" style="background:${st.tint};color:${st.color}">
+          <span class="status-dot" style="background:${st.color}"></span>${st.label}
+        </span>
+      </div>
+      ${s.coach ? `<div class="coach-line"><strong>${escapeHtml(s.coach)}</strong><span class="role">— ${escapeHtml(s.role)}</span></div>` : ""}
+      <div class="contact-row">
+        ${s.email ? `<a href="mailto:${escapeHtml(s.email)}">${escapeHtml(s.email)}</a>` : ""}
+        ${s.phone ? `<a href="tel:${escapeHtml(s.phone)}">${escapeHtml(s.phone)}</a>` : ""}
+        ${s.twitter ? `<span>${escapeHtml(s.twitter)}</span>` : ""}
+      </div>
+      ${followupHtml}
+      ${s.notes ? `<div class="notes">${escapeHtml(s.notes)}</div>` : ""}
+      <div class="card-actions">
+        <select class="status-select" data-id="${s.id}">
+          ${Object.entries(STATUS).map(([k,v]) => `<option value="${k}" ${s.status===k?"selected":""}>${v.label}</option>`).join("")}
+        </select>
+        <button class="mini-btn compose" data-compose="${s.id}">&#9993; Compose Email</button>
+        <button class="mini-btn" data-edit="${s.id}">Edit</button>
+        <button class="mini-btn danger" data-delete="${s.id}">Remove</button>
+      </div>
+    </div>`;
+  }).join("")}</div>`;
+  document.querySelectorAll(".status-select").forEach(sel => {
+    sel.addEventListener("change", () => setStatus(sel.dataset.id, sel.value));
+  });
+  document.querySelectorAll("[data-edit]").forEach(btn => {
+    btn.addEventListener("click", () => { const s = schools.find(x => x.id === btn.dataset.edit); if(s) openModal(s); });
+  });
+  document.querySelectorAll("[data-compose]").forEach(btn => {
+    btn.addEventListener("click", () => { const s = schools.find(x => x.id === btn.dataset.compose); if(s) openComposeModal(s); });
+  });
+  document.querySelectorAll("[data-delete]").forEach(btn => {
+    btn.addEventListener("click", () => deleteSchool(btn.dataset.delete));
+  });
+}
+function render(){ renderStats(); renderFilters(); renderGrid(); }
+function exportCSV(){
+  if(schools.length === 0){ showToast("Nothing to export yet"); return; }
+  const headers = ["School","Division","Status","Coach","Role","Email","Phone","Twitter","Follow-up Date","Notes","Date Added"];
+  const rows = schools.map(s => [s.school, s.division, STATUS[s.status].label, s.coach, s.role, s.email, s.phone, s.twitter, s.followupDate||"", s.notes, s.dateAdded]);
+  const csv = [headers,...rows].map(r => r.map(v => `"${String(v||"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "sufs-coach-outreach-tracker.csv"; a.click();
+  URL.revokeObjectURL(url); showToast("CSV exported");
+}
+$("#addBtn").addEventListener("click", () => openModal(null));
+$("#cancelBtn").addEventListener("click", closeModal);
+$("#saveBtn").addEventListener("click", handleSave);
+$("#exportBtn").addEventListener("click", exportCSV);
+overlay.addEventListener("click", (e) => { if(e.target === overlay) closeModal(); });
+document.addEventListener("keydown", (e) => { if(e.key === "Escape") closeModal(); });
+loadSchools();
+</script>
+
+<script>
+const EMAIL_TEMPLATES = {
+  initial: {
+    label: "Initial Outreach",
+    subject: (s) => `[Your Last Name], [Grad Year] [Position] — ${s.school}`,
+    body: (s) => `Coach ${lastNameOnly(s.coach) || "[Coach Last Name]"},\n\nMy name is [Player Name], a [Grad Year] [Position] from [High School / Travel Team] in [City, State]. I've followed ${s.school}'s program and [specific detail about the program] is a big part of why I'm reaching out directly.\n\nQuick snapshot: [Height] / [Weight], [Key Metric 1], [Key Metric 2], [GPA]. Highlight video: [Video Link]. Full stats and schedule: [Stats Link].\n\nI'll be competing at [Showcase/Tournament Name] on [Date] if you're able to see me play. I'd welcome the chance to talk with you about the program.\n\nThank you for your time,\n[Player Name] | [Phone] | [Email]`,
+  },
+  followup: {
+    label: "Follow-Up",
+    subject: (s) => `Following Up — [Your Last Name], [Grad Year] [Position]`,
+    body: (s) => `Coach ${lastNameOnly(s.coach) || "[Coach Last Name]"},\n\nI wanted to follow up on my note from [date of last email] about ${s.school}'s program. Since then, [new update — new stats, new video, recent results, etc.].\n\nUpdated video: [Video Link]. I'll also be at [Upcoming Showcase/Event] on [Date] if that's useful.\n\nI'm still very interested in ${s.school} and would appreciate any thoughts you have, whenever you have a moment.\n\nThanks again,\n[Player Name] | [Phone] | [Email]`,
+  },
+  showcase: {
+    label: "Post-Showcase Update",
+    subject: (s) => `[Showcase Name] Results — [Your Last Name], [Grad Year] [Position]`,
+    body: (s) => `Coach ${lastNameOnly(s.coach) || "[Coach Last Name]"},\n\nI competed at [Showcase Name] on [Date] and wanted to share my results in case they're useful as you evaluate the [Grad Year] class: [Key Result 1], [Key Result 2].\n\nUpdated highlight video: [Video Link]. Let me know if you'd like any additional film or information about ${s.school}'s program — I remain very interested.\n\nBest,\n[Player Name] | [Phone] | [Email]`,
+  },
+  visit: {
+    label: "Camp / Visit Request",
+    subject: (s) => `Interest in Visiting ${s.school} — [Your Last Name], [Grad Year]`,
+    body: (s) => `Coach ${lastNameOnly(s.coach) || "[Coach Last Name]"},\n\nI'm very interested in ${s.school} and wanted to ask about upcoming ID camps, prospect camps, or campus visit opportunities for [Grad Year] recruits.\n\nFor reference: [Position], [Key Metric], [GPA]. Highlight video: [Video Link].\n\nIs there a camp date or visit window you'd recommend for someone at my stage in the process? I'm flexible and would love to see the program in person.\n\nThank you,\n[Player Name] | [Phone] | [Email]`,
+  },
+};
+function lastNameOnly(name){
+  if(!name) return "";
+  const parts = name.trim().split(/\s+/);
+  return parts.length ? parts[parts.length - 1] : "";
+}
+let composeSchoolId = null;
+let activeTemplate = "initial";
+function openComposeModal(school){
+  composeSchoolId = school.id;
+  activeTemplate = "initial";
+  $("#composeSubtitle").textContent = `Drafting an email to ${school.coach || "the coaching staff"} at ${school.school}.`;
+  $("#composeMeta").innerHTML = `<strong>${escapeHtml(school.coach || "Coach (not set)")}</strong> — ${escapeHtml(school.role || "")}${school.email ? ` &middot; ${escapeHtml(school.email)}` : " &middot; <em>No email on file — edit this school to add one</em>"}`;
+  $("#c-to").value = school.email || "";
+  renderTemplateChips();
+  applyTemplate(activeTemplate);
+  $("#composeOverlay").classList.add("open");
+}
+function renderTemplateChips(){
+  $("#templateRow").innerHTML = Object.entries(EMAIL_TEMPLATES).map(([key, t]) => `
+    <button class="template-chip ${activeTemplate===key?'active':''}" data-template="${key}">${t.label}</button>
+  `).join("");
+  document.querySelectorAll(".template-chip").forEach(chip => {
+    chip.addEventListener("click", () => { activeTemplate = chip.dataset.template; applyTemplate(activeTemplate); renderTemplateChips(); });
+  });
+}
+function applyTemplate(key){
+  const school = schools.find(s => s.id === composeSchoolId);
+  if(!school) return;
+  const tpl = EMAIL_TEMPLATES[key];
+  $("#c-subject").value = tpl.subject(school);
+  $("#c-body").value = tpl.body(school);
+}
+function closeComposeModal(){ $("#composeOverlay").classList.remove("open"); composeSchoolId = null; }
+$("#composeCancelBtn").addEventListener("click", closeComposeModal);
+$("#composeOverlay").addEventListener("click", (e) => { if(e.target.id === "composeOverlay") closeComposeModal(); });
+$("#copyBodyBtn").addEventListener("click", async () => {
+  const text = `Subject: ${$("#c-subject").value}\n\n${$("#c-body").value}`;
+  try{ await navigator.clipboard.writeText(text); showToast("Email copied to clipboard"); }
+  catch(e){ showToast("Couldn't copy — select and copy manually"); }
+});
+$("#openEmailBtn").addEventListener("click", () => {
+  const school = schools.find(s => s.id === composeSchoolId);
+  const to = school && school.email ? school.email : "";
+  const subject = encodeURIComponent($("#c-subject").value);
+  const body = encodeURIComponent($("#c-body").value);
+  window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+  if(school && school.status === "not-started"){ school.status = "contacted"; saveSchools(); render(); }
+  showToast("Opening your email app…");
+});
+</script>
+</body>
+</html>
